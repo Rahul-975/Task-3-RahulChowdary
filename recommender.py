@@ -35,7 +35,27 @@ similarity_scores = cosine_similarity(user_vector, tfidf_matrix).flatten()
 print("[SUCCESS] Vector mapping complete. Text attributes converted to TF-IDF arrays.")
 print("[SUCCESS] Similarity scoring engine run complete.\n")
 
-print("RAW CALCULATED SCORES: ")
-for idx, score in enumerate(similarity_scores):
-    print(f"-> {df['role'].iloc[idx]}: {score:.4f}")
-print("--------------------------------------------------")
+print("--- PHASE 3: OUTPUT PIPELINE INITIALIZED ---")
+
+# 1. Pair each career index position with its calculated similarity score
+# 2. Sort the array in descending order based on the match scores
+# 3. Truncate the list to isolate only the top N results (Top 3 paths)
+top_n = 3
+sorted_indices = similarity_scores.argsort()[::-1][:top_n]
+
+print("[SUCCESS] Descending sorting executed. Matches organized by relevance.")
+print("[SUCCESS] Output truncation filter applied. Top-N threshold locked.\n")
+
+print("================ FINAL DIAGNOSTIC REPORT ================")
+print("RECOMMENDED CAREER PATHS BASED ON SKILL PREFERENCES:")
+print("---------------------------------------------------------")
+
+# Loop through our isolated top indices and format the final output card
+for rank, idx in enumerate(sorted_indices, start=1):
+    role_name = df['role'].iloc[idx]
+    match_percentage = similarity_scores[idx] * 100
+    
+    print(f"Rank {rank}: {role_name:<20} | Match Score: {match_percentage:.2f}%")
+
+print("=========================================================")
+print("[SUCCESS] Production-grade recommendation engine complete!")
